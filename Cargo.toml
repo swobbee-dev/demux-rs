@@ -1,5 +1,5 @@
 [package]
-name = "hc138"
+name = "demux-rs"
 version = "0.1.0"
 edition = "2021"
 authors = ["Malte Brieske <9287988+mbrieske@users.noreply.github.com>"]
