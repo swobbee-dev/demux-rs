@@ -4,7 +4,7 @@ use crate::Demultiplexer;
 use embedded_hal::digital::{ErrorType, OutputPin};
 
 /// High-level wrapper: 74HC138 + a PortMutex around its driver.
-pub struct DemuxDevice<M, A0, A1, A2, G1>
+pub struct HC138<M, A0, A1, A2, G1>
 where
     M: PortMutex<Port = HC138Driver<A0, A1, A2, G1>>,
     A0: OutputPin,
@@ -15,7 +15,7 @@ where
     driver: M,
 }
 
-impl<M, A0, A1, A2, G1> DemuxDevice<M, A0, A1, A2, G1>
+impl<M, A0, A1, A2, G1> HC138<M, A0, A1, A2, G1>
 where
     M: PortMutex<Port = HC138Driver<A0, A1, A2, G1>>,
     A0: OutputPin,
@@ -46,7 +46,7 @@ where
     }
 }
 
-impl<M, A0, A1, A2, G1> Demultiplexer for DemuxDevice<M, A0, A1, A2, G1>
+impl<M, A0, A1, A2, G1> Demultiplexer for HC138<M, A0, A1, A2, G1>
 where
     M: PortMutex<Port = HC138Driver<A0, A1, A2, G1>>,
     A0: OutputPin,
@@ -137,7 +137,7 @@ where
 }
 
 #[cfg(test)]
-impl<A0, A1, A2, G1> DemuxDevice<core::cell::RefCell<HC138Driver<A0, A1, A2, G1>>, A0, A1, A2, G1>
+impl<A0, A1, A2, G1> HC138<core::cell::RefCell<HC138Driver<A0, A1, A2, G1>>, A0, A1, A2, G1>
 where
     A0: embedded_hal::digital::OutputPin,
     A1: embedded_hal::digital::OutputPin,
@@ -189,8 +189,7 @@ mod tests {
         ];
         let mock_g1 = Mock::new(&expectations_g1);
 
-        let mut dev =
-            DemuxDevice::<RefCell<_>, _, _, _, _>::new(mock_a0, mock_a1, mock_a2, mock_g1);
+        let mut dev = HC138::<RefCell<_>, _, _, _, _>::new(mock_a0, mock_a1, mock_a2, mock_g1);
         let parts = dev.split();
 
         let mut y0 = parts.y0;
