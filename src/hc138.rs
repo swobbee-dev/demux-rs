@@ -58,7 +58,7 @@ where
 
     type Parts<'a> = Parts<'a, M, A0, A1, A2, G1> where Self: 'a;
 
-    fn split_demux<'a>(&'a mut self) -> Self::Parts<'a> {
+    fn split_demux(&mut self) -> Self::Parts<'_> {
         self.split()
     }
 }

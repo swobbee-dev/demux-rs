@@ -15,5 +15,5 @@ pub trait Demultiplexer {
     where
         Self: 'a;
 
-    fn split_demux<'a>(&'a mut self) -> Self::Parts<'a>;
+    fn split_demux(&mut self) -> Self::Parts<'_>;
 }
