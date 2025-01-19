@@ -34,10 +34,6 @@ where
     pub(crate) driver: M,
 }
 
-// ----------------------------------------------------------------------------
-// 1) A simpler "new()" that *always* returns a RefCell-based HC138
-// ----------------------------------------------------------------------------
-
 impl<A0, A1, A2, G1> HC138<RefCell<HC138Driver<A0, A1, A2, G1>>, A0, A1, A2, G1>
 where
     A0: OutputPin,
@@ -64,10 +60,6 @@ where
     }
 }
 
-// ----------------------------------------------------------------------------
-// 2) A "new_with_mutex()" for more advanced concurrency or customization
-// ----------------------------------------------------------------------------
-
 impl<M, A0, A1, A2, G1> HC138<M, A0, A1, A2, G1>
 where
     M: PortMutex<Port = HC138Driver<A0, A1, A2, G1>>,
@@ -78,12 +70,12 @@ where
 {
     /// Fully generic constructor that accepts a user-supplied `PortMutex`.
     ///
-    /// Call this if you need concurrency locking beyond `RefCell`.
+    /// Call this if concurrency locking beyond `RefCell` is needed.
     ///
     /// ```no_run
-    /// # use your_crate::hc138::HC138;
-    /// # use your_crate::driver::HC138Driver;
-    /// # use your_crate::shared::PortMutex;
+    /// # use demux_rs::hc138::HC138;
+    /// # use demux_rs::driver::HC138Driver;
+    /// # use demux_rs::mutex::PortMutex;
     /// # use embedded_hal::digital::OutputPin;
     /// struct SomeMutex<T>(T);
     /// impl<T> PortMutex for SomeMutex<T> {
@@ -92,13 +84,9 @@ where
     ///     fn lock<R, F: FnOnce(&mut Self::Port) -> R>(&self, f: F) -> R { unimplemented!() }
     /// }
     ///
-    /// # struct PinA0; impl OutputPin for PinA0 { fn set_low(&mut self)->Result<(),()> {Ok(())} fn set_high(&mut self)->Result<(),()> {Ok(())}}
-    /// # struct PinA1; impl OutputPin for PinA1 { fn set_low(&mut self)->Result<(),()> {Ok(())} fn set_high(&mut self)->Result<(),()> {Ok(())}}
-    /// # struct PinA2; impl OutputPin for PinA2 { fn set_low(&mut self)->Result<(),()> {Ok(())} fn set_high(&mut self)->Result<(),()> {Ok(())}}
-    /// # struct PinG1; impl OutputPin for PinG1 { fn set_low(&mut self)->Result<(),()> {Ok(())} fn set_high(&mut self)->Result<(),()> {Ok(())}}
     ///
     /// // Usage:
-    /// fn example(a0: PinA0, a1: PinA1, a2: PinA2, g1: PinG1) {
+    /// fn example(a0: impl OutputPin, a1: impl OutputPin, a2: impl OutputPin, g1: impl OutputPin) {
     ///     let hc138 = HC138::new_with_mutex(a0, a1, a2, g1, SomeMutex::create);
     ///     // ...
     /// }
@@ -132,7 +120,7 @@ where
     }
 }
 
-// We also implement Demultiplexer for all versions of HC138<M, ...>
+// Demultiplexer for all versions of HC138<M, ...> also implemented
 impl<M, A0, A1, A2, G1> Demultiplexer for HC138<M, A0, A1, A2, G1>
 where
     M: PortMutex<Port = HC138Driver<A0, A1, A2, G1>>,
@@ -222,7 +210,6 @@ where
     }
 }
 
-// Test-specific helper for the RefCell-based version
 #[cfg(test)]
 impl<A0, A1, A2, G1> HC138<RefCell<HC138Driver<A0, A1, A2, G1>>, A0, A1, A2, G1>
 where
