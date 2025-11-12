@@ -1,8 +1,9 @@
 [package]
 name = "demux-rs"
 version = "0.1.1"
-edition = "2021"
+edition = "2024"
 authors = ["Malte Brieske <9287988+mbrieske@users.noreply.github.com>"]
+license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
